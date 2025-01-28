@@ -62,7 +62,6 @@ public class CiphersImplement {
                     ciphertext.append(letter);
                     continue;
                 }
-
                 char shift = keyword.charAt(j % keyword.length());
                 char encryptedLetter = (char) ((letter + shift - 2 * 'A') % 26 + 'A');
                 ciphertext.append(encryptedLetter);
