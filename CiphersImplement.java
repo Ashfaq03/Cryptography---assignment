@@ -2,7 +2,7 @@ import java.math.BigInteger;
 
 public class CiphersImplement {
     
-    // Implementations of Affine cipher
+    // Implementation of Affine cipher
     class AffineCipher {
         static int a = 5; // Must be coprime with 26
         static int b = 8;
@@ -48,7 +48,7 @@ public class CiphersImplement {
         }
     }
 
-    // Implementations of Vigenere cipher
+    // Implementation of Vigenere cipher
     class VigenereCipher {
         // Function to encrypt plaintext
         static String encrypt(String plaintext, String keyword) {
@@ -93,7 +93,7 @@ public class CiphersImplement {
             return plaintext.toString();
         }
     }
-
+    // Implementation of Extended Euclidean Algorithm
     class ExtendedEuclidean {
         static int gcdExtended(int a, int b, int[] xy) {
             if (a == 0) {
@@ -109,6 +109,7 @@ public class CiphersImplement {
         }
     }
 
+    // Implementaion of RSA Algorithm
     class RSA {
         static BigInteger p = new BigInteger("3");
         static BigInteger q = new BigInteger("11");
@@ -127,7 +128,8 @@ public class CiphersImplement {
             return cipher.modPow(d, n);
         }
     }
-
+    
+    // Implementaion of El-Gamal Algorithm
     class ElGamal {
         static BigInteger p = new BigInteger("11");
         static BigInteger e1 = new BigInteger("2");
@@ -149,7 +151,7 @@ public class CiphersImplement {
     }
 
 
-    
+    // Main function
     public static void main(String[] args) {
         // Affine Cipher 
         System.out.println("Affine Cipher:");
