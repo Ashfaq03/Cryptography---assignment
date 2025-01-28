@@ -1,15 +1,18 @@
 import java.math.BigInteger;
 
 public class CiphersImplement {
+    // Implementations of Affine cipher
     class AffineCipher {
-        static int a = 5, b = 8;
-        static int m = 26;
+        static int a = 5; // Must be coprime with 26
+        static int b = 8;
 
+        // Function to encrypt plaintext
         static String encrypt(String text) {
             StringBuilder result = new StringBuilder();
             for (char c : text.toCharArray()) {
                 if (Character.isLetter(c)) {
-                    result.append((char) ((((a * (c - 'A')) + b) % m) + 'A'));
+                    char base = Character.isUpperCase(c) ? 'A' : 'a';
+                    result.append((char) (((a * (c - base) + b) % 26) + base));
                 } else {
                     result.append(c);
                 }
@@ -17,49 +20,76 @@ public class CiphersImplement {
             return result.toString();
         }
 
-        static int modInverse(int a, int m) {
-            for (int i = 1; i < m; i++) {
-                if ((a * i) % m == 1)
-                    return i;
-            }
-            return -1;
-        }
-
+        // Function to decrypt ciphertext
         static String decrypt(String text) {
-            int a_inv = modInverse(a, m);
             StringBuilder result = new StringBuilder();
+            int a_inv = modInverse(a, 26);
             for (char c : text.toCharArray()) {
                 if (Character.isLetter(c)) {
-                    result.append((char) (((a_inv * ((c - 'A' - b + m)) % m)) + 'A'));
+                    char base = Character.isUpperCase(c) ? 'A' : 'a';
+                    result.append((char) (((a_inv * ((c - base - b + 26) % 26)) % 26) + base));
                 } else {
                     result.append(c);
                 }
             }
             return result.toString();
+        }
+
+        // Function to find modular inverse of a under mod m
+        static int modInverse(int a, int m) {
+            a = a % m;
+            for (int x = 1; x < m; x++) {
+                if ((a * x) % m == 1)
+                    return x;
+            }
+            return 1;
         }
     }
 
+    // Implementations of Vigenere cipher
     class VigenereCipher {
-        static String encrypt(String text, String key) {
-            StringBuilder result = new StringBuilder();
-            int keyLen = key.length();
-            for (int i = 0; i < text.length(); i++) {
-                char c = text.charAt(i);
-                char k = key.charAt(i % keyLen);
-                result.append((char) (((c + k) % 26) + 'A'));
+        // Function to encrypt plaintext
+        static String encrypt(String plaintext, String keyword) {
+            StringBuilder ciphertext = new StringBuilder();
+            keyword = keyword.toUpperCase();
+            plaintext = plaintext.toUpperCase();
+
+            for (int i = 0, j = 0; i < plaintext.length(); i++) {
+                char letter = plaintext.charAt(i);
+                if (!Character.isLetter(letter)) {
+                    ciphertext.append(letter);
+                    continue;
+                }
+
+                char shift = keyword.charAt(j % keyword.length());
+                char encryptedLetter = (char) ((letter + shift - 2 * 'A') % 26 + 'A');
+                ciphertext.append(encryptedLetter);
+                j++;
             }
-            return result.toString();
+
+            return ciphertext.toString();
         }
 
-        static String decrypt(String text, String key) {
-            StringBuilder result = new StringBuilder();
-            int keyLen = key.length();
-            for (int i = 0; i < text.length(); i++) {
-                char c = text.charAt(i);
-                char k = key.charAt(i % keyLen);
-                result.append((char) (((c - k + 26) % 26) + 'A'));
+        // Function to decrypt ciphertext
+        static String decrypt(String ciphertext, String keyword) {
+            StringBuilder plaintext = new StringBuilder();
+            keyword = keyword.toUpperCase();
+            ciphertext = ciphertext.toUpperCase();
+
+            for (int i = 0, j = 0; i < ciphertext.length(); i++) {
+                char letter = ciphertext.charAt(i);
+                if (!Character.isLetter(letter)) {
+                    plaintext.append(letter);
+                    continue;
+                }
+
+                char shift = keyword.charAt(j % keyword.length());
+                char decryptedLetter = (char) ((letter - shift + 26) % 26 + 'A');
+                plaintext.append(decryptedLetter);
+                j++;
             }
-            return result.toString();
+
+            return plaintext.toString();
         }
     }
 
@@ -79,28 +109,30 @@ public class CiphersImplement {
     }
 
     class RSA {
-        static BigInteger p = new BigInteger("61");
-        static BigInteger q = new BigInteger("53");
+        static BigInteger p = new BigInteger("3");
+        static BigInteger q = new BigInteger("11");
         static BigInteger n = p.multiply(q);
         static BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
-        static BigInteger e = new BigInteger("17");
+        static BigInteger e = new BigInteger("3"); // e is relatively prime to phi
         static BigInteger d = e.modInverse(phi);
 
+        // Function to encrypt plaintext
         static BigInteger encrypt(BigInteger msg) {
             return msg.modPow(e, n);
         }
 
+        // Function to decrypt ciphertext
         static BigInteger decrypt(BigInteger cipher) {
             return cipher.modPow(d, n);
         }
     }
 
     class ElGamal {
-        static BigInteger p = new BigInteger("23");
-        static BigInteger e1 = new BigInteger("5");
-        static BigInteger d = new BigInteger("6");
+        static BigInteger p = new BigInteger("11");
+        static BigInteger e1 = new BigInteger("2");
+        static BigInteger d = new BigInteger("3");
         static BigInteger e2 = e1.modPow(d, p);
-        static BigInteger r = new BigInteger("15");
+        static BigInteger r = new BigInteger("4");
         static BigInteger c1 = e1.modPow(r, p);
         static BigInteger c2;
 
@@ -116,7 +148,7 @@ public class CiphersImplement {
     }
 
     public static void main(String[] args) {
-        // Affine Cipher Example
+        // Affine Cipher 
         System.out.println("Affine Cipher:");
         String plainTextAffine = "HELLO";
         String encryptedAffine = AffineCipher.encrypt(plainTextAffine);
@@ -125,10 +157,10 @@ public class CiphersImplement {
         System.out.println("Encrypted: " + encryptedAffine);
         System.out.println("Decrypted: " + decryptedAffine);
 
-        // Vigenere Cipher Example
+        // Vigenere Cipher 
         System.out.println("\nVigenere Cipher:");
-        String plainTextVigenere = "HELLO";
-        String keyVigenere = "KEY";
+        String plainTextVigenere = "ATTACK AT DAWN";
+        String keyVigenere = "SECURE";
         String encryptedVigenere = VigenereCipher.encrypt(plainTextVigenere, keyVigenere);
         String decryptedVigenere = VigenereCipher.decrypt(encryptedVigenere, keyVigenere);
         System.out.println("Plain Text: " + plainTextVigenere);
@@ -136,27 +168,27 @@ public class CiphersImplement {
         System.out.println("Encrypted: " + encryptedVigenere);
         System.out.println("Decrypted: " + decryptedVigenere);
 
-        // Extended Euclidean Algorithm Example
+        // Extended Euclidean Algorithm 
         System.out.println("\nExtended Euclidean Algorithm:");
-        int a = 30, b = 20;
+        int a = 35, b = 15;
         int[] xy = new int[2];
         int gcd = ExtendedEuclidean.gcdExtended(a, b, xy);
         System.out.println("Numbers: " + a + ", " + b);
-        System.out.println("GCD: " + gcd);
+        System.out.println("GCD(" + a + "," + b + "): " + gcd);
         System.out.println("Coefficients x, y: " + xy[0] + ", " + xy[1]);
 
-        // RSA Cipher Example
+        // RSA Cipher 
         System.out.println("\nRSA Cipher:");
-        BigInteger plainTextRSA = new BigInteger("65");
+        BigInteger plainTextRSA = new BigInteger("7");
         BigInteger encryptedRSA = RSA.encrypt(plainTextRSA);
         BigInteger decryptedRSA = RSA.decrypt(encryptedRSA);
         System.out.println("Plain Text: " + plainTextRSA);
         System.out.println("Encrypted: " + encryptedRSA);
         System.out.println("Decrypted: " + decryptedRSA);
 
-        // ElGamal Cipher Example
+        // ElGamal Cipher 
         System.out.println("\nElGamal Cipher:");
-        BigInteger plainTextElGamal = new BigInteger("19");
+        BigInteger plainTextElGamal = new BigInteger("7");
         ElGamal.encrypt(plainTextElGamal);
         BigInteger decryptedElGamal = ElGamal.decrypt();
         System.out.println("Plain Text: " + plainTextElGamal);
@@ -176,23 +208,22 @@ Encrypted: RCLLA
 Decrypted: HELLO
 
 Vigenere Cipher:
-Plain Text: HELLO
-Key: KEY
-Encrypted: RIJVS
-Decrypted: HELLO
+Plain Text: ATTACK AT DAWN
+Key: SECURE
+Encrypted: SXVUTO SX FUNR
+Decrypted: ATTACK AT DAWN
 
 Extended Euclidean Algorithm:
-Numbers: 30, 20
-GCD: 10
-Coefficients x, y: 1, -1
+Numbers: 35, 15
+GCD(35,15): 5
+Coefficients x, y: 1, -2
 
 RSA Cipher:
-Plain Text: 65
-Encrypted: 2790
-Decrypted: 65
+Plain Text: 7
+Encrypted: 13
+Decrypted: 7
 
 ElGamal Cipher:
-Plain Text: 19
-Encrypted: (19, 15)
-Decrypted: 19
-PS D:\Desktop\crypto> */
+Plain Text: 7
+Encrypted: (5, 6)
+Decrypted: 7               */
