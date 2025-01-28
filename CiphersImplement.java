@@ -1,6 +1,6 @@
 import java.math.BigInteger;
 
-public class CipherDemo {
+public class CiphersImplement {
     class AffineCipher {
         static int a = 5, b = 8;
         static int m = 26;
@@ -168,8 +168,8 @@ public class CipherDemo {
 }
 
 /* ** OUTPUT **
-PS D:\Desktop\crypto> javac .\CiphersDemo.java
-PS D:\Desktop\crypto> java .\CiphersDemo.java 
+PS D:\Desktop\crypto> javac .\CiphersImplement.java
+PS D:\Desktop\crypto> java .\CiphersImplement.java 
 Affine Cipher:
 Plain Text: HELLO
 Encrypted: RCLLA
