@@ -1,6 +1,7 @@
 import java.math.BigInteger;
 
 public class CiphersImplement {
+    
     // Implementations of Affine cipher
     class AffineCipher {
         static int a = 5; // Must be coprime with 26
@@ -35,6 +36,7 @@ public class CiphersImplement {
             return result.toString();
         }
 
+        
         // Function to find modular inverse of a under mod m
         static int modInverse(int a, int m) {
             a = a % m;
@@ -147,6 +149,8 @@ public class CiphersImplement {
         }
     }
 
+
+    
     public static void main(String[] args) {
         // Affine Cipher 
         System.out.println("Affine Cipher:");
@@ -198,6 +202,12 @@ public class CiphersImplement {
     }
 
 }
+
+
+
+
+
+
 
 /* ** OUTPUT **
 PS D:\Desktop\crypto> javac .\CiphersImplement.java
